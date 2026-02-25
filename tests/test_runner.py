@@ -11,8 +11,11 @@ from conda_tasks.runner import SubprocessShell
 def test_run_simple_command(tmp_path):
     shell = SubprocessShell()
     marker = tmp_path / "marker.txt"
-    cmd = f'python -c "open(r\'{marker}\', \'w\').write(\'done\')"'
-    exit_code = shell.run(cmd, {}, tmp_path)
+    script = tmp_path / "_write.py"
+    script.write_text(
+        f"from pathlib import Path\nPath({str(marker)!r}).write_text('done')\n"
+    )
+    exit_code = shell.run(f'python "{script}"', {}, tmp_path)
     assert exit_code == 0
     assert marker.exists()
 
@@ -27,11 +30,12 @@ def test_run_returns_exit_code(tmp_path, code):
 def test_run_with_env(tmp_path):
     shell = SubprocessShell()
     marker = tmp_path / "envtest.txt"
-    cmd = (
-        f"python -c \"import os; "
-        f"open(r'{marker}', 'w').write(os.environ['MY_VAR'])\""
+    script = tmp_path / "_envwrite.py"
+    script.write_text(
+        f"import os\nfrom pathlib import Path\n"
+        f"Path({str(marker)!r}).write_text(os.environ['MY_VAR'])\n"
     )
-    exit_code = shell.run(cmd, {"MY_VAR": "hello123"}, tmp_path)
+    exit_code = shell.run(f'python "{script}"', {"MY_VAR": "hello123"}, tmp_path)
     assert exit_code == 0
     content = marker.read_text().strip()
     assert "hello123" in content
