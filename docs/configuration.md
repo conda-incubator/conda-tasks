@@ -22,9 +22,9 @@ conda-tasks reads from five file formats, checked in this order.
 
 ::::{tab-set}
 
-:::{tab-item} conda-tasks.yml
+:::{tab-item} YAML
 
-The canonical YAML format. Top-level `tasks:` key with nested task definitions.
+The canonical format (`conda-tasks.yml`). Top-level `tasks:` key with nested task definitions.
 
 ```yaml
 tasks:
@@ -43,9 +43,9 @@ tasks:
 
 :::
 
-:::{tab-item} conda-tasks.toml
+:::{tab-item} TOML
 
-The canonical TOML format. Same table structure as `pixi.toml`.
+The canonical TOML format (`conda-tasks.toml`). Same table structure as `pixi.toml`.
 
 ```toml
 [tasks]

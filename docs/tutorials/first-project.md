@@ -73,7 +73,7 @@ project root:
 
 ::::{tab-set}
 
-:::{tab-item} conda-tasks.yml
+:::{tab-item} YAML
 
 ```yaml
 tasks:
@@ -93,7 +93,7 @@ tasks:
 
 :::
 
-:::{tab-item} conda-tasks.toml
+:::{tab-item} TOML
 
 ```toml
 [tasks]

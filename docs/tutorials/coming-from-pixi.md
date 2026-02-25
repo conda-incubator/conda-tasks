@@ -184,7 +184,7 @@ conda task export --file pixi.toml --format toml
 
 ::::{tab-set}
 
-:::{tab-item} pixi.toml (input)
+:::{tab-item} pixi.toml
 
 ```toml
 [tasks]
@@ -198,7 +198,7 @@ build = "python -m build --wheel"
 
 :::
 
-:::{tab-item} conda-tasks.yml (exported YAML)
+:::{tab-item} Exported YAML
 
 ```yaml
 tasks:
@@ -217,7 +217,7 @@ tasks:
 
 :::
 
-:::{tab-item} conda-tasks.toml (exported TOML)
+:::{tab-item} Exported TOML
 
 ```toml
 [tasks]
