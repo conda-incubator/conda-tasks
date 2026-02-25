@@ -2,15 +2,15 @@
 
 This tutorial shows how to set up conda-tasks in a CI pipeline.
 Because conda-tasks separates task running from dependency management,
-your CI configuration will have two distinct phases: **environment setup**
-and **task execution**.
+your CI configuration will have two distinct phases: environment setup
+and task execution.
 
 ## The two-phase pattern
 
 Every CI job follows the same structure:
 
-1. **Set up the conda environment** with the tools your tasks need
-2. **Run tasks** using `conda task`
+1. Set up the conda environment with the tools your tasks need
+2. Run tasks using `conda task`
 
 This is different from pixi-based CI, where `pixi run` handles both
 phases in a single command.

@@ -2,31 +2,31 @@
 
 ## Project structure
 
-- **CLI modules are separated by subcommand**, mirroring conda's own CLI
+- CLI modules are separated by subcommand, mirroring conda's own CLI
   layout. Each subcommand lives in its own module under `conda_tasks/cli/`
   (e.g., `run.py`, `list.py`, `add.py`, `remove.py`, `export.py`).
   `cli/main.py` contains parser configuration and dispatch; `cli/__init__.py`
   is a thin re-export shim (`configure_parser`, `execute`, `generate_parser`).
 
-- **Parser implementations use submodules, not subpackages.** The canonical
+- Parser implementations use submodules, not subpackages. The canonical
   format parsers live at `conda_tasks/parsers/yaml.py` and
   `conda_tasks/parsers/toml.py` — plain modules, not directories with
   `__init__.py`. Only create a subpackage when there are multiple files
   to group.
 
-- **Tests mirror the source structure.** Tests for `conda_tasks/cli/run.py`
+- Tests mirror the source structure. Tests for `conda_tasks/cli/run.py`
   live in `tests/cli/test_run.py`, tests for `conda_tasks/parsers/yaml.py`
   live in `tests/parsers/test_yaml.py`, etc. Test module names match their
   corresponding source module names.
 
 ## Imports
 
-- **Use relative imports** for all intra-package references
+- Use relative imports for all intra-package references
   (`from .models import Task`, `from ..exceptions import TaskParseError`).
   Absolute `conda_tasks.*` imports should only appear in tests and
   entry points.
 
-- **Inline (lazy) imports are reserved for performance-critical paths.**
+- Inline (lazy) imports are reserved for performance-critical paths.
   Acceptable cases: `plugin.py` hooks (loaded on every `conda` invocation),
   `cli/main.py` subcommand dispatch (only the chosen handler is loaded),
   `template.py` Jinja2 import (skipped when no template markers are present),

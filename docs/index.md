@@ -1,6 +1,6 @@
 # conda-tasks
 
-**Pixi-style task runner plugin for conda.**
+Pixi-style task runner plugin for conda.
 
 conda-tasks adds a `conda task` subcommand that brings [pixi's powerful task
 runner system](https://pixi.sh/latest/features/tasks/) to conda. Define tasks
@@ -42,13 +42,13 @@ conda task list         # shows all available tasks
 
 ## Features
 
-- **Multiple file formats** -- `conda-tasks.yml`, `pixi.toml`, `pyproject.toml`, `.condarc`
-- **Dependency graphs** -- tasks depend on other tasks with automatic ordering
-- **Jinja2 templates** -- use `{{ conda.platform }}` and other variables in commands
-- **Task arguments** -- pass arguments with defaults
-- **Caching** -- skip re-execution when inputs haven't changed
-- **Cross-platform** -- per-platform task overrides for OS-specific commands
-- **Conda environments** -- run tasks in specific environments with `-n`/`-p`
+- Multiple file formats -- `conda-tasks.yml`, `pixi.toml`, `pyproject.toml`, `.condarc`
+- Dependency graphs -- tasks depend on other tasks with automatic ordering
+- Jinja2 templates -- use `{{ conda.platform }}` and other variables in commands
+- Task arguments -- pass arguments with defaults
+- Caching -- skip re-execution when inputs haven't changed
+- Cross-platform -- per-platform task overrides for OS-specific commands
+- Conda environments -- run tasks in specific environments with `-n`/`-p`
 
 ```{toctree}
 :maxdepth: 2

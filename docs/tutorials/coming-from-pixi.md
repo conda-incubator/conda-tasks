@@ -5,7 +5,7 @@ This tutorial explains the differences and shows how to migrate.
 
 ## The big picture
 
-In pixi, a single `pixi.toml` manages **both** your dependencies and your
+In pixi, a single `pixi.toml` manages both your dependencies and your
 tasks. When you run `pixi run test`, pixi:
 
 1. Reads the dependency specification from `pixi.toml`
@@ -13,7 +13,7 @@ tasks. When you run `pixi run test`, pixi:
 3. Activates the environment
 4. Runs the task
 
-conda-tasks **only does step 3 and 4**. It is a task runner, not a package
+conda-tasks only does step 3 and 4. It is a task runner, not a package
 manager. Environment creation and dependency management remain the
 responsibility of conda itself.
 
@@ -87,7 +87,7 @@ tasks:
 ### 2. Template engine: Jinja2 instead of MiniJinja
 
 pixi uses MiniJinja (Rust). conda-tasks uses Jinja2 (Python). The template
-syntax is **identical** for all practical purposes -- `{{ pixi.platform }}`
+syntax is identical for all practical purposes -- `{{ pixi.platform }}`
 works in conda-tasks when reading from `pixi.toml`, and `{{ conda.platform }}`
 is available everywhere.
 

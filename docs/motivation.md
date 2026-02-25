@@ -14,7 +14,7 @@ switching tools.
 
 ## Tasks, not dependencies
 
-conda-tasks is deliberately scoped as a **task runner only**. It does not
+conda-tasks is deliberately scoped as a task runner only. It does not
 create environments, install packages, or manage dependencies. That is
 conda's job.
 
@@ -36,17 +36,17 @@ second source of truth and added complexity that conda handles well on its own.
 
 With the split approach you can:
 
-- Use **any** conda workflow for environments (manual, `environment.yml`,
+- Use any conda workflow for environments (manual, `environment.yml`,
   `conda-lock`, constructor)
 - Share task definitions across teams without coupling to a specific
   dependency specification
-- Run the same tasks against **different environments** via `-n`
+- Run the same tasks against different environments via `-n`
 - Adopt conda-tasks incrementally without changing your existing
   environment management
 
 ## Comparison to pixi tasks
 
-conda-tasks is designed for **feature parity** with pixi's task system on
+conda-tasks is designed for feature parity with pixi's task system on
 the task-running side:
 
 | Feature | pixi | conda-tasks |
@@ -62,22 +62,22 @@ the task-running side:
 | Environment variables | Yes | Yes |
 | Clean environment | Yes | Yes |
 | Hidden tasks (`_` prefix) | Yes | Yes |
-| **Dependency management** | **Built-in** | **Not included** (use conda) |
-| **Environment creation** | **Built-in** | **Not included** (use conda) |
+| Dependency management | Built-in | Not included (use conda) |
+| Environment creation | Built-in | Not included (use conda) |
 
 ### Key differences
 
-- **Dependency management**: pixi creates and manages environments from its
+- Dependency management: pixi creates and manages environments from its
   manifest. conda-tasks does not -- you create environments with conda and
   point tasks at them. See {doc}`tutorials/coming-from-pixi` for a migration
   guide.
-- **Template engine**: conda-tasks uses Jinja2 (Python-native, widely available)
+- Template engine: conda-tasks uses Jinja2 (Python-native, widely available)
   instead of MiniJinja (Rust). The template syntax is identical.
-- **Shell**: conda-tasks uses the native platform shell via `subprocess` instead
+- Shell: conda-tasks uses the native platform shell via `subprocess` instead
   of `deno_task_shell`. Cross-platform commands are handled via platform-specific
   task overrides or Jinja2 conditionals.
-- **File formats**: conda-tasks reads from `conda-tasks.yml`, `pixi.toml`,
+- File formats: conda-tasks reads from `conda-tasks.yml`, `pixi.toml`,
   `pyproject.toml`, and `.condarc`. pixi only reads from `pixi.toml` and
   `pyproject.toml`.
-- **Conda integration**: Tasks can target specific conda environments using
+- Conda integration: tasks can target specific conda environments using
   `-n`/`-p` flags, matching conda's standard interface.

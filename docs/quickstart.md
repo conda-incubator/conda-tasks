@@ -50,11 +50,11 @@ conda task list
 
 conda-tasks automatically detects task definitions from these files (in order):
 
-1. **`conda-tasks.yml`** -- canonical YAML format
-2. **`conda-tasks.toml`** -- canonical TOML format (same structure as pixi.toml)
-3. **`pixi.toml`** -- reads the `[tasks]` table directly
-4. **`pyproject.toml`** -- reads `[tool.conda-tasks.tasks]` or `[tool.pixi.tasks]`
-5. **`.condarc`** -- reads `plugins.conda_tasks.tasks` (via conda's settings API)
+1. `conda-tasks.yml` -- canonical YAML format
+2. `conda-tasks.toml` -- canonical TOML format (same structure as pixi.toml)
+3. `pixi.toml` -- reads the `[tasks]` table directly
+4. `pyproject.toml` -- reads `[tool.conda-tasks.tasks]` or `[tool.pixi.tasks]`
+5. `.condarc` -- reads `plugins.conda_tasks.tasks` (via conda's settings API)
 
 ## Running in a Specific Environment
 

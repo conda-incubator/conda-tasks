@@ -45,7 +45,7 @@ requires-python = ">=3.10"
 
 ## 2. Set up your conda environment
 
-conda-tasks is a **task runner**, not a package manager. It does not create
+conda-tasks is a task runner, not a package manager. It does not create
 environments or install dependencies for you -- that is conda's job. This
 separation is intentional: your environment definition lives in one place
 (`environment.yml`, `conda create`, etc.) and your task definitions live in

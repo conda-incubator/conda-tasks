@@ -10,14 +10,14 @@ runner system to conda. Define tasks in `conda-tasks.yml`, `pixi.toml`,
 
 ## Features
 
-- **Multiple file formats**: `conda-tasks.yml` (canonical), `pixi.toml`,
+- Multiple file formats: `conda-tasks.yml` (canonical), `pixi.toml`,
   `pyproject.toml`, `.condarc`
-- **Dependency graphs**: Tasks can depend on other tasks with topological ordering
-- **Jinja2 templates**: Use `{{ conda.platform }}` and other variables in commands
-- **Task arguments**: Pass arguments to tasks with defaults
-- **Caching**: Skip re-execution when inputs haven't changed
-- **Cross-platform**: Per-platform task overrides for OS-specific commands
-- **Conda environments**: Run tasks in specific conda environments
+- Dependency graphs: tasks can depend on other tasks with topological ordering
+- Jinja2 templates: use `{{ conda.platform }}` and other variables in commands
+- Task arguments: pass arguments to tasks with defaults
+- Caching: skip re-execution when inputs haven't changed
+- Cross-platform: per-platform task overrides for OS-specific commands
+- Conda environments: run tasks in specific conda environments
 
 ## Installation
 
