@@ -2,82 +2,86 @@
 
 Pixi-style task runner plugin for conda.
 
-conda-tasks adds a `conda task` subcommand that brings [pixi's powerful task
-runner system](https://pixi.sh/latest/features/tasks/) to conda. Define tasks
-in your project, then run them with `conda task run <name>`.
-
-## Installation
-
-```bash
-conda install conda-tasks
-```
-
-## Quick Example
-
-Create a `conda-tasks.yml` in your project root:
-
-```yaml
-tasks:
-  build:
-    cmd: "python -m build"
-    description: "Build the package"
-  test:
-    cmd: "pytest tests/ -v"
-    depends-on: [build]
-    description: "Run the test suite"
-  lint:
-    cmd: "ruff check ."
-    description: "Lint the codebase"
-  check:
-    depends-on: [test, lint]
-    description: "Run all checks"
-```
-
-Then run:
-
 ```bash
 conda task run test     # builds first, then tests
 conda task list         # shows all available tasks
 ```
 
-## Features
+```yaml
+# conda-tasks.yml
+tasks:
+  build:
+    cmd: "python -m build"
+  test:
+    cmd: "pytest tests/ -v"
+    depends-on: [build]
+  lint:
+    cmd: "ruff check ."
+  check:
+    depends-on: [test, lint]
+```
 
-- Multiple file formats -- `conda-tasks.yml`, `pixi.toml`, `pyproject.toml`, `.condarc`
-- Dependency graphs -- tasks depend on other tasks with automatic ordering
-- Jinja2 templates -- use `{{ conda.platform }}` and other variables in commands
-- Task arguments -- pass arguments with defaults
-- Caching -- skip re-execution when inputs haven't changed
-- Cross-platform -- per-platform task overrides for OS-specific commands
-- Conda environments -- run tasks in specific environments with `-n`/`-p`
+---
+
+::::{grid} 2
+:gutter: 3
+
+:::{grid-item-card} {octicon}`rocket` Getting started
+:link: quickstart
+:link-type: doc
+
+Install conda-tasks and define your first task in under a minute.
+:::
+
+:::{grid-item-card} {octicon}`mortar-board` Tutorials
+:link: tutorials/index
+:link-type: doc
+
+Step-by-step guides: your first project, migrating from pixi, CI setup.
+:::
+
+:::{grid-item-card} {octicon}`list-unordered` Features
+:link: features
+:link-type: doc
+
+Dependencies, templates, caching, arguments, platform overrides,
+environment targeting, and more.
+:::
+
+:::{grid-item-card} {octicon}`gear` Configuration
+:link: configuration
+:link-type: doc
+
+All task fields, file formats (`conda-tasks.yml`, `conda-tasks.toml`,
+`pixi.toml`, `pyproject.toml`, `.condarc`), and examples.
+:::
+
+:::{grid-item-card} {octicon}`terminal` CLI reference
+:link: reference/cli
+:link-type: doc
+
+Complete `conda task` command-line documentation.
+:::
+
+:::{grid-item-card} {octicon}`code` API reference
+:link: reference/api
+:link-type: doc
+
+Python API for models, parsers, graph resolution, caching, and
+template rendering.
+:::
+
+::::
 
 ```{toctree}
-:maxdepth: 2
-:caption: Getting Started
+:hidden:
 
 quickstart
 tutorials/index
-```
-
-```{toctree}
-:maxdepth: 2
-:caption: User Guide
-
 features
 configuration
-```
-
-```{toctree}
-:maxdepth: 2
-:caption: Reference
-
 reference/cli
 reference/api
-```
-
-```{toctree}
-:maxdepth: 2
-:caption: About
-
 motivation
 changelog
 ```

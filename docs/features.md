@@ -1,8 +1,12 @@
 # Features
 
-## Task Commands
+## Task commands
 
 A task's `cmd` can be a simple string or a list of strings that are joined with spaces:
+
+::::{tab-set}
+
+:::{tab-item} YAML
 
 ```yaml
 tasks:
@@ -12,9 +16,27 @@ tasks:
     cmd: ["python", "-m", "build", "--wheel"]
 ```
 
-## Task Aliases
+:::
+
+:::{tab-item} TOML
+
+```toml
+[tasks]
+build = "python -m build"
+build-alt = { cmd = ["python", "-m", "build", "--wheel"] }
+```
+
+:::
+
+::::
+
+## Task aliases
 
 Tasks with no `cmd` that only list dependencies act as aliases:
+
+::::{tab-set}
+
+:::{tab-item} YAML
 
 ```yaml
 tasks:
@@ -23,14 +45,21 @@ tasks:
     description: "Run all checks"
 ```
 
-In TOML formats (`conda-tasks.toml` or `pixi.toml`), this is the shorthand list form:
+:::
+
+:::{tab-item} TOML
 
 ```toml
-[tasks]
-check = [{ task = "test" }, { task = "lint" }, { task = "typecheck" }]
+[tasks.check]
+depends-on = ["test", "lint", "typecheck"]
+description = "Run all checks"
 ```
 
-## Hidden Tasks
+:::
+
+::::
+
+## Hidden tasks
 
 Tasks prefixed with `_` are hidden from `conda task list` but can still be
 referenced as dependencies or run explicitly:
@@ -44,7 +73,7 @@ tasks:
     depends-on: [_setup]
 ```
 
-## Task Arguments
+## Task arguments
 
 Tasks can accept named arguments with optional defaults:
 
@@ -64,7 +93,7 @@ Run with:
 conda task run test src/tests/
 ```
 
-## Template Variables
+## Template variables
 
 Commands support Jinja2 templates with `conda.*` context variables:
 
@@ -83,9 +112,11 @@ Commands support Jinja2 templates with `conda.*` context variables:
 
 When reading from `pixi.toml`, `{{ pixi.platform }}` etc. also work as aliases.
 
-## Environment Variables
+## Environment variables
 
-Tasks can set environment variables:
+::::{tab-set}
+
+:::{tab-item} YAML
 
 ```yaml
 tasks:
@@ -96,7 +127,21 @@ tasks:
       DATABASE_URL: "sqlite:///test.db"
 ```
 
-## Clean Environment
+:::
+
+:::{tab-item} TOML
+
+```toml
+[tasks.test]
+cmd = "pytest"
+env = { PYTHONPATH = "src", DATABASE_URL = "sqlite:///test.db" }
+```
+
+:::
+
+::::
+
+## Clean environment
 
 Run a task with only essential environment variables:
 
@@ -122,9 +167,18 @@ tasks:
     outputs: ["dist/*.whl"]
 ```
 
-## Platform-Specific Tasks
+:::{tip}
+The cache uses a fast `(mtime, size)` pre-check before falling back to SHA-256
+hashing, so the overhead on cache hits is minimal.
+:::
 
-Override task fields per platform:
+## Platform-specific tasks
+
+Override task fields per platform using the `target` key:
+
+::::{tab-set}
+
+:::{tab-item} YAML
 
 ```yaml
 tasks:
@@ -135,7 +189,21 @@ tasks:
         cmd: "rd /s /q build"
 ```
 
-Or use template conditionals:
+:::
+
+:::{tab-item} TOML
+
+```toml
+[tasks]
+clean = "rm -rf build/"
+
+[target.win-64.tasks]
+clean = "rd /s /q build"
+```
+
+:::
+
+:::{tab-item} Jinja2 conditional
 
 ```yaml
 tasks:
@@ -143,7 +211,11 @@ tasks:
     cmd: "{% if conda.is_win %}rd /s /q build{% else %}rm -rf build/{% endif %}"
 ```
 
-## Conda Environments
+:::
+
+::::
+
+## Conda environments
 
 Tasks run inside conda environments. The environment is resolved in this order:
 
@@ -157,4 +229,8 @@ tasks:
   test-legacy:
     cmd: "pytest"
     default-environment: "py38-compat"
+```
+
+```bash
+conda task run test -n py311-compat
 ```

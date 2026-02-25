@@ -1,6 +1,6 @@
-# Configuration Reference
+# Configuration reference
 
-## Task Fields
+## Task fields
 
 | Field | Type | Description |
 |---|---|---|
@@ -16,9 +16,15 @@
 | `default-environment` | `string` | Conda environment to activate by default. |
 | `target` | `dict` | Per-platform overrides (keys are platform strings). |
 
-## File Formats
+## File formats
 
-### conda-tasks.yml (canonical YAML)
+conda-tasks reads from five file formats, checked in this order.
+
+::::{tab-set}
+
+:::{tab-item} conda-tasks.yml
+
+The canonical YAML format. Top-level `tasks:` key with nested task definitions.
 
 ```yaml
 tasks:
@@ -35,9 +41,11 @@ tasks:
         cmd: "python -m build --wheel"
 ```
 
-### conda-tasks.toml (canonical TOML)
+:::
 
-Uses the same table structure as `pixi.toml`:
+:::{tab-item} conda-tasks.toml
+
+The canonical TOML format. Same table structure as `pixi.toml`.
 
 ```toml
 [tasks]
@@ -55,7 +63,11 @@ env = { PYTHONPATH = "src" }
 build = "python -m build --wheel"
 ```
 
-### pixi.toml
+:::
+
+:::{tab-item} pixi.toml
+
+Reads the `[tasks]` and `[target.*.tasks]` tables from an existing pixi manifest.
 
 ```toml
 [tasks]
@@ -66,7 +78,11 @@ test = { cmd = "pytest", depends-on = ["build"] }
 build = "python -m build --wheel"
 ```
 
-### pyproject.toml
+:::
+
+:::{tab-item} pyproject.toml
+
+Reads from `[tool.conda-tasks.tasks]`, falling back to `[tool.pixi.tasks]`.
 
 ```toml
 [tool.conda-tasks.tasks]
@@ -80,12 +96,13 @@ depends-on = ["build"]
 build = "python -m build --wheel"
 ```
 
-Falls back to `[tool.pixi.tasks]` if `[tool.conda-tasks.tasks]` is absent.
+:::
 
-### .condarc
+:::{tab-item} .condarc
 
-Task definitions in `.condarc` are loaded through conda's plugin settings API.
-They are available globally across all projects.
+Task definitions loaded through conda's plugin settings API. Available
+globally across all projects. Settings from all condarc sources (user,
+system, environment) are merged automatically.
 
 ```yaml
 plugins:
@@ -96,9 +113,12 @@ plugins:
 ```
 
 The setting is registered as `conda_tasks` (with `conda-tasks` accepted as an alias).
-Settings from all condarc sources (user, system, environment) are merged automatically.
 
-## Argument Definitions
+:::
+
+::::
+
+## Argument definitions
 
 ```yaml
 tasks:
@@ -111,7 +131,7 @@ tasks:
         default: "-v"
 ```
 
-## Dependency Definitions
+## Dependency definitions
 
 Simple list:
 
