@@ -1,31 +1,17 @@
 # conda-tasks
 
-Pixi-style task runner plugin for conda.
+[![Tests](https://github.com/jezdez/conda-tasks/actions/workflows/test.yml/badge.svg)](https://github.com/jezdez/conda-tasks/actions/workflows/test.yml)
+[![Docs](https://github.com/jezdez/conda-tasks/actions/workflows/docs.yml/badge.svg)](https://jezdez.github.io/conda-tasks/)
+[![License](https://img.shields.io/github/license/jezdez/conda-tasks)](https://github.com/jezdez/conda-tasks/blob/main/LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10%E2%80%933.14-blue)](https://github.com/jezdez/conda-tasks)
 
-## Overview
+A task runner for conda, inspired by [pixi](https://pixi.sh)'s task system.
 
-`conda-tasks` adds a `conda task` subcommand that brings pixi's powerful task
-runner system to conda. Define tasks in `conda-tasks.yml`, `pixi.toml`,
-`pyproject.toml`, or `.condarc`, then run them with `conda task run <name>`.
+Define tasks in your project, wire up dependencies between them, and run
+everything through `conda task`. Works with your existing conda environments
+-- no new package manager required.
 
-## Features
-
-- Multiple file formats: `conda-tasks.yml` (canonical), `pixi.toml`,
-  `pyproject.toml`, `.condarc`
-- Dependency graphs: tasks can depend on other tasks with topological ordering
-- Jinja2 templates: use `{{ conda.platform }}` and other variables in commands
-- Task arguments: pass arguments to tasks with defaults
-- Caching: skip re-execution when inputs haven't changed
-- Cross-platform: per-platform task overrides for OS-specific commands
-- Conda environments: run tasks in specific conda environments
-
-## Installation
-
-```bash
-conda install conda-tasks
-```
-
-## Quick Start
+## Quick start
 
 Create a `conda-tasks.yml` in your project root:
 
@@ -33,20 +19,60 @@ Create a `conda-tasks.yml` in your project root:
 tasks:
   build:
     cmd: "python -m build"
-    description: "Build the package"
   test:
-    cmd: "pytest tests/"
+    cmd: "pytest tests/ -v"
     depends-on: [build]
-    description: "Run tests"
+  lint:
+    cmd: "ruff check ."
+  check:
+    depends-on: [test, lint]
 ```
 
-Run a task:
+```
+$ conda task run check
+  ▶ build
+  ▶ lint
+  ▶ test
+```
+
+## Why?
+
+Conda handles environments and packages. But there's no built-in way to
+define project tasks -- the kind of thing you'd otherwise put in a `Makefile`,
+`tox.ini`, or a pile of shell scripts. pixi solved this well, but it's a
+separate tool with its own environment management.
+
+conda-tasks brings the task runner part to conda as a plugin. You keep using
+conda for environments, and get a proper task system on top.
+
+## What it does
+
+- Task dependencies with topological ordering (`depends-on`)
+- Jinja2 templates in commands (`{{ conda.platform }}`, conditionals)
+- Task arguments with defaults
+- Input/output caching -- skip tasks when nothing changed
+- Per-platform overrides for cross-platform projects
+- Run tasks in any conda environment (`-n myenv`)
+- Reads from `conda-tasks.yml`, `conda-tasks.toml`, `pixi.toml`,
+  `pyproject.toml`, or `.condarc`
+
+## Installation
 
 ```bash
-conda task run test
-conda task list
+conda install -c conda-forge conda-tasks
 ```
+
+## What it doesn't do
+
+conda-tasks is a task runner, not a package manager. It does not create
+environments or install dependencies -- that's conda's job. If you're
+coming from pixi where `pixi run` handles both, see the
+[migration guide](https://jezdez.github.io/conda-tasks/tutorials/coming-from-pixi/).
 
 ## Documentation
 
-Full documentation is available at https://jezdez.github.io/conda-tasks/.
+https://jezdez.github.io/conda-tasks/
+
+## License
+
+BSD 3-Clause. See [LICENSE](LICENSE).
