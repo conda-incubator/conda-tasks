@@ -11,7 +11,7 @@ from conda_tasks.runner import SubprocessShell
 def test_run_simple_command(tmp_path):
     shell = SubprocessShell()
     marker = tmp_path / "marker.txt"
-    cmd = f'echo done > "{marker}"'
+    cmd = f'python -c "open(r\'{marker}\', \'w\').write(\'done\')"'
     exit_code = shell.run(cmd, {}, tmp_path)
     assert exit_code == 0
     assert marker.exists()
@@ -27,10 +27,10 @@ def test_run_returns_exit_code(tmp_path, code):
 def test_run_with_env(tmp_path):
     shell = SubprocessShell()
     marker = tmp_path / "envtest.txt"
-    if on_win:
-        cmd = 'echo %MY_VAR% > "' + str(marker) + '"'
-    else:
-        cmd = f'echo "$MY_VAR" > "{marker}"'
+    cmd = (
+        f"python -c \"import os; "
+        f"open(r'{marker}', 'w').write(os.environ['MY_VAR'])\""
+    )
     exit_code = shell.run(cmd, {"MY_VAR": "hello123"}, tmp_path)
     assert exit_code == 0
     content = marker.read_text().strip()
