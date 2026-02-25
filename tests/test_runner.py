@@ -12,10 +12,8 @@ def test_run_simple_command(tmp_path):
     shell = SubprocessShell()
     marker = tmp_path / "marker.txt"
     script = tmp_path / "_write.py"
-    script.write_text(
-        f"from pathlib import Path\nPath({str(marker)!r}).write_text('done')\n"
-    )
-    exit_code = shell.run(f'python "{script}"', {}, tmp_path)
+    script.write_text("from pathlib import Path\nPath('marker.txt').write_text('done')\n")
+    exit_code = shell.run("python _write.py", {}, tmp_path)
     assert exit_code == 0
     assert marker.exists()
 
@@ -32,10 +30,10 @@ def test_run_with_env(tmp_path):
     marker = tmp_path / "envtest.txt"
     script = tmp_path / "_envwrite.py"
     script.write_text(
-        f"import os\nfrom pathlib import Path\n"
-        f"Path({str(marker)!r}).write_text(os.environ['MY_VAR'])\n"
+        "import os\nfrom pathlib import Path\n"
+        "Path('envtest.txt').write_text(os.environ['MY_VAR'])\n"
     )
-    exit_code = shell.run(f'python "{script}"', {"MY_VAR": "hello123"}, tmp_path)
+    exit_code = shell.run("python _envwrite.py", {"MY_VAR": "hello123"}, tmp_path)
     assert exit_code == 0
     content = marker.read_text().strip()
     assert "hello123" in content
