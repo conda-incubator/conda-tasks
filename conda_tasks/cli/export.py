@@ -1,0 +1,37 @@
+"""Handler for ``conda task export``."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from ..parsers import detect_and_parse
+from ..parsers.toml import tasks_to_toml
+from ..parsers.yaml import tasks_to_yaml
+
+if TYPE_CHECKING:
+    import argparse
+    from pathlib import Path
+
+
+def execute_export(args: argparse.Namespace) -> int:
+    """Execute the ``conda task export`` subcommand."""
+    file_path = getattr(args, "file", None)
+    task_file, tasks = detect_and_parse(file_path=file_path)
+
+    quiet = getattr(args, "quiet", False)
+    output: Path | None = getattr(args, "output", None)
+    export_format: str = getattr(args, "export_format", "yaml")
+
+    if export_format == "toml":
+        text = tasks_to_toml(tasks)
+    else:
+        text = tasks_to_yaml(tasks)
+
+    if output is not None:
+        output.write_text(text, encoding="utf-8")
+        if not quiet:
+            print(f"  Exported {len(tasks)} task(s) from {task_file} to {output}")
+    else:
+        print(text, end="")
+
+    return 0
