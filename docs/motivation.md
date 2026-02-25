@@ -81,3 +81,13 @@ the task-running side:
   `pyproject.toml`.
 - Conda integration: tasks can target specific conda environments using
   `-n`/`-p` flags, matching conda's standard interface.
+
+## Acknowledgements
+
+conda-tasks would not exist without the work of the
+[prefix.dev](https://prefix.dev) team on [pixi](https://github.com/prefix-dev/pixi).
+The task system design -- dependency graphs, platform overrides, caching,
+template variables, and the overall developer experience -- comes directly
+from their implementation. We are grateful for their contribution to the
+conda ecosystem and for setting the bar on what a project task runner
+should look like.

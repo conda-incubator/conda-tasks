@@ -73,6 +73,15 @@ coming from pixi where `pixi run` handles both, see the
 
 https://jezdez.github.io/conda-tasks/
 
+## Acknowledgements
+
+The task system in conda-tasks is directly inspired by the work of the
+[prefix.dev](https://prefix.dev) team on [pixi](https://github.com/prefix-dev/pixi).
+Their design of task definitions, dependency graphs, platform overrides,
+and caching provided the blueprint for this plugin. conda-tasks exists
+because pixi demonstrated that a good task runner belongs in every
+project workflow.
+
 ## License
 
 BSD 3-Clause. See [LICENSE](LICENSE).
