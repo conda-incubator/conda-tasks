@@ -22,6 +22,4 @@ jobs:
           environments: ${{ matrix.python }}
 
       - name: Run tests
-        env:
-          PIXI_ENV: ${{ matrix.python }}
-        run: pixi run -e "$PIXI_ENV" test
+        run: pixi run -e ${{ matrix.python }} test
