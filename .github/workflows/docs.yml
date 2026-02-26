@@ -30,15 +30,15 @@ jobs:
           activate-environment: docs
           channels: conda-forge
 
-      - name: Install docs dependencies and conda-pypi
+      - name: Install docs dependencies
         run: |
-          conda install -y conda-pypi \
+          conda install -y \
             conda-sphinx-theme linkify-it-py myst-parser sphinx \
             sphinx-argparse sphinx-copybutton sphinx-design \
             sphinx-reredirects sphinx-sitemap
 
       - name: Install conda-tasks (editable)
-        run: conda pypi install -e .
+        run: pip install --no-build-isolation --no-deps -e .
 
       - name: Build docs
         run: conda task run docs
