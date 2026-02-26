@@ -13,13 +13,24 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python: ["test-py310", "test-py311", "test-py312", "test-py313", "test-py314"]
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+    defaults:
+      run:
+        shell: bash -el {0}
     steps:
       - uses: actions/checkout@v4
 
-      - uses: prefix-dev/setup-pixi@v0.8.1
+      - uses: conda-incubator/setup-miniconda@v3
         with:
-          environments: ${{ matrix.python }}
+          python-version: ${{ matrix.python }}
+          activate-environment: test
+          channels: conda-forge
+
+      - name: Install conda-pypi
+        run: conda install -n base -y -c conda-forge conda-pypi
+
+      - name: Install conda-tasks with test dependencies
+        run: conda pypi install -e ".[test]"
 
       - name: Run tests
-        run: pixi run -e ${{ matrix.python }} test
+        run: conda task run test

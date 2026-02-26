@@ -6853,14 +6853,28 @@ packages:
   timestamp: 1749630737894
 - pypi: ./
   name: conda-tasks
-  version: 0.0.0.dev22+gdaa23f72d.d20260225
-  sha256: 540ae244b008f5040e00439bca5eb232570997ee145fa162d7960592af49be0d
+  version: 0.0.0.dev26+g8ec831e1b.d20260226
+  sha256: 2b7bf97d6646a91a75e5f0a8fbeead1d4d897efc4b9eac2f111828c6b9ec4528
   requires_dist:
   - conda>=24.7
   - jinja2>=3.0
   - platformdirs>=3.0
   - pyyaml>=6.0
   - tomlkit>=0.13
+  - conda-sphinx-theme ; extra == 'docs'
+  - linkify-it-py ; extra == 'docs'
+  - myst-parser ; extra == 'docs'
+  - sphinx ; extra == 'docs'
+  - sphinx-argparse ; extra == 'docs'
+  - sphinx-copybutton ; extra == 'docs'
+  - sphinx-design ; extra == 'docs'
+  - sphinx-reredirects ; extra == 'docs'
+  - sphinx-sitemap ; extra == 'docs'
+  - pre-commit ; extra == 'lint'
+  - ruff ; extra == 'lint'
+  - ty>=0.0.18,<0.0.19 ; extra == 'lint'
+  - pytest-cov>=6.0 ; extra == 'test'
+  - pytest>=7.4 ; extra == 'test'
   requires_python: '>=3.10'
 - conda: https://conda.anaconda.org/conda-forge/linux-64/coverage-7.13.4-py310h3406613_0.conda
   sha256: 68afd2810131ac1e6d8db9b59947eeca4087060588abb16a06ca28813e8f95e6
