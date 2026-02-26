@@ -13,7 +13,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import yaml
+from conda.common.serialize.yaml import YAMLError
+from conda.common.serialize.yaml import dumps as yaml_dumps
+from conda.common.serialize.yaml import loads as yaml_loads
 
 from ..exceptions import TaskNotFoundError, TaskParseError
 from .base import TaskFileParser
@@ -64,8 +66,8 @@ class CondaRCParser(TaskFileParser):
         if path.name not in self.filenames:
             return False
         try:
-            data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-        except yaml.YAMLError:
+            data = yaml_loads(path.read_text(encoding="utf-8")) or {}
+        except YAMLError:
             return False
         plugins = data.get("plugins", {})
         if not isinstance(plugins, dict):
@@ -78,8 +80,8 @@ class CondaRCParser(TaskFileParser):
         raw_tasks = _raw_tasks_from_condarc()
         if not raw_tasks:
             try:
-                data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-            except yaml.YAMLError as exc:
+                data = yaml_loads(path.read_text(encoding="utf-8")) or {}
+            except YAMLError as exc:
                 raise TaskParseError(str(path), str(exc)) from exc
             plugins = data.get("plugins", {})
             section = plugins.get("conda_tasks") or plugins.get("conda-tasks") or {}
@@ -93,7 +95,7 @@ class CondaRCParser(TaskFileParser):
     def add_task(self, path: Path, name: str, task: Task) -> None:
         """Add or update a task under ``plugins.conda_tasks.tasks`` in ``.condarc``."""
         if path.exists():
-            data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+            data = yaml_loads(path.read_text(encoding="utf-8")) or {}
         else:
             data = {}
 
@@ -110,13 +112,11 @@ class CondaRCParser(TaskFileParser):
         if task.description:
             defn["description"] = task.description
         section[name] = defn if defn else task.cmd
-        path.write_text(
-            yaml.dump(data, default_flow_style=False, sort_keys=False), encoding="utf-8"
-        )
+        path.write_text(yaml_dumps(data), encoding="utf-8")
 
     def remove_task(self, path: Path, name: str) -> None:
         """Remove a task from the ``.condarc`` file by name."""
-        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        data = yaml_loads(path.read_text(encoding="utf-8")) or {}
         plugins = data.get("plugins", {})
         section = plugins.get("conda_tasks", plugins.get("conda-tasks", {})).get(
             "tasks", {}
@@ -124,6 +124,4 @@ class CondaRCParser(TaskFileParser):
         if name not in section:
             raise TaskNotFoundError(name, list(section.keys()))
         del section[name]
-        path.write_text(
-            yaml.dump(data, default_flow_style=False, sort_keys=False), encoding="utf-8"
-        )
+        path.write_text(yaml_dumps(data), encoding="utf-8")

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import pytest
-import yaml
+from conda.common.serialize.yaml import loads as yaml_loads
 
 import conda_tasks.parsers.condarc as condarc_mod
 from conda_tasks.exceptions import TaskNotFoundError, TaskParseError
@@ -19,7 +19,7 @@ def test_can_handle(sample_condarc):
     ("content", "expected"),
     [
         ("channels:\n  - conda-forge\n", False),
-        (": :\n  - invalid [yaml", False),
+        ("key: [invalid", False),
         ("plugins: not-a-dict\n", False),
         (
             "plugins:\n  conda-tasks:\n    tasks:\n      hi:\n        cmd: echo hi\n",
@@ -86,7 +86,7 @@ def test_add_task_with_depends_and_description(tmp_project):
     parser = CondaRCParser()
     parser.add_task(path, "newtask", task)
 
-    data = yaml.safe_load(path.read_text())
+    data = yaml_loads(path.read_text())
     section = data["plugins"]["conda_tasks"]["tasks"]
     assert "newtask" in section
     assert section["newtask"]["depends-on"] == ["existing"]
@@ -99,7 +99,7 @@ def test_add_task_creates_file(tmp_project):
     parser = CondaRCParser()
     parser.add_task(path, "hello", Task(name="hello", cmd="echo hello"))
     assert path.exists()
-    data = yaml.safe_load(path.read_text())
+    data = yaml_loads(path.read_text())
     assert data["plugins"]["conda_tasks"]["tasks"]["hello"]["cmd"] == "echo hello"
 
 
@@ -114,7 +114,7 @@ def test_remove_task_from_condarc(tmp_project):
     parser = CondaRCParser()
     parser.remove_task(path, "greet")
 
-    data = yaml.safe_load(path.read_text())
+    data = yaml_loads(path.read_text())
     assert "greet" not in data["plugins"]["conda_tasks"]["tasks"]
     assert "farewell" in data["plugins"]["conda_tasks"]["tasks"]
 
@@ -151,7 +151,7 @@ def test_parse_falls_back_to_file(tmp_project, monkeypatch, key):
 @pytest.mark.parametrize(
     ("content", "match"),
     [
-        (": :\n  - broken [yaml", "condarc"),
+        ("key: [invalid", "condarc"),
         ("plugins:\n  conda_tasks:\n    tasks: not-a-mapping\n", "must be a mapping"),
     ],
     ids=["invalid-yaml", "non-dict-tasks"],
@@ -173,6 +173,6 @@ def test_add_task_simple_cmd_only(tmp_project):
     parser = CondaRCParser()
     parser.add_task(path, "simple", task)
 
-    data = yaml.safe_load(path.read_text())
+    data = yaml_loads(path.read_text())
     section = data["plugins"]["conda_tasks"]["tasks"]
     assert section["simple"]["cmd"] == "echo hi"

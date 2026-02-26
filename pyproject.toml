@@ -25,7 +25,6 @@ dependencies = [
   "conda >=24.7",
   "jinja2 >=3.0",
   "platformdirs >=3.0",
-  "pyyaml >=6.0",
   "tomlkit >=0.13",
 ]
 dynamic = ["version"]
@@ -33,8 +32,50 @@ dynamic = ["version"]
 [project.urls]
 homepage = "https://github.com/jezdez/conda-tasks"
 
+[project.optional-dependencies]
+test = [
+  "pytest >=7.4",
+  "pytest-cov >=6.0",
+]
+lint = [
+  "pre-commit",
+  "ruff",
+  "ty >=0.0.18,<0.0.19",
+]
+docs = [
+  "conda-sphinx-theme",
+  "linkify-it-py",
+  "myst-parser",
+  "sphinx",
+  "sphinx-argparse",
+  "sphinx-copybutton",
+  "sphinx-design",
+  "sphinx-reredirects",
+  "sphinx-sitemap",
+]
+
 [project.entry-points.conda]
 conda-tasks = "conda_tasks.plugin"
+
+[tool.conda-tasks.tasks]
+dev = 'python -c "import conda_tasks; print(conda_tasks)"'
+test = "python -m pytest"
+test-cov = "python -m pytest --cov --cov-report=term-missing --cov-report=html"
+lint = "ruff check ."
+fmt = "ruff format ."
+typecheck = "ty check conda_tasks/ tests/"
+
+[tool.conda-tasks.tasks.docs]
+cmd = "sphinx-build -M dirhtml . _build"
+cwd = "docs"
+
+[tool.conda-tasks.tasks.serve]
+cmd = "python -m http.server"
+cwd = "docs/_build/dirhtml"
+
+[tool.conda-tasks.tasks.clean]
+cmd = "rm -rf _build"
+cwd = "docs"
 
 [tool.pixi.workspace]
 channels = ["conda-forge"]
@@ -44,7 +85,6 @@ platforms = ["linux-64", "osx-64", "osx-arm64", "win-64", "linux-aarch64"]
 python = ">=3.10"
 conda = ">=24.7"
 jinja2 = ">=3.0"
-pyyaml = ">=6.0"
 platformdirs = ">=3.0"
 tomlkit = ">=0.13"
 

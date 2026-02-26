@@ -18,15 +18,39 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
     steps:
       - uses: actions/checkout@v4
 
-      - uses: prefix-dev/setup-pixi@v0.8.1
+      - uses: conda-incubator/setup-miniconda@v3
         with:
-          environments: docs
+          python-version: "3.12"
+          activate-environment: docs
+          channels: conda-forge
+
+      - name: Install conda-pypi and conda-tasks deps in base
+        run: |
+          conda install -n base -y -c conda-forge \
+            "conda>=26.1" "conda-pypi>=0.4" \
+            jinja2 platformdirs tomlkit
+
+      - name: Install docs dependencies
+        run: |
+          conda install -y \
+            conda jinja2 platformdirs tomlkit \
+            conda-sphinx-theme linkify-it-py myst-parser sphinx \
+            sphinx-argparse sphinx-copybutton sphinx-design \
+            sphinx-reredirects sphinx-sitemap
+
+      - name: Install conda-tasks (editable)
+        run: |
+          conda pypi install -e .
+          conda run -n base conda pypi install -e .
 
       - name: Build docs
-        run: pixi run -e docs docs
+        run: conda task run docs
 
       - uses: actions/upload-pages-artifact@v3
         if: github.ref == 'refs/heads/main'
