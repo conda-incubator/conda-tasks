@@ -99,8 +99,8 @@ def test_execute_run_dry_run_with_deps(tmp_path, capsys):
     assert "build" in output
 
 
-def test_execute_run_dry_run_alias_skipped(tmp_path, capsys):
-    """Alias tasks (no cmd) are silently skipped during dry-run."""
+def test_execute_run_dry_run_alias_done(tmp_path, capsys):
+    """Alias tasks print [done] after their dependencies in dry-run."""
     task_file = tmp_path / "conda-tasks.yml"
     task_file.write_text(
         "tasks:\n"
@@ -114,7 +114,45 @@ def test_execute_run_dry_run_alias_skipped(tmp_path, capsys):
     output = capsys.readouterr().out
     assert "[dry-run] lint" in output
     assert "[dry-run] test" in output
-    assert "[dry-run] check" not in output
+    assert "[done] check" in output
+
+
+def test_execute_run_alias_done(tmp_path, capsys, monkeypatch):
+    """Alias tasks print [done] after dependencies finish executing."""
+    task_file = tmp_path / "conda-tasks.yml"
+    task_file.write_text(
+        "tasks:\n"
+        "  lint:\n    cmd: 'ruff check .'\n"
+        "  test:\n    cmd: 'pytest'\n"
+        "  check:\n    depends-on: [lint, test]\n"
+    )
+
+    fake = FakeShell()
+    monkeypatch.setattr(run_mod, "SubprocessShell", lambda: fake)
+    result = execute_run(_run_args(task_file, task_name="check"))
+
+    assert result == 0
+    output = capsys.readouterr().out
+    assert "[run] lint" in output
+    assert "[run] test" in output
+    assert "[done] check" in output
+
+
+def test_execute_run_alias_quiet(tmp_path, capsys, monkeypatch):
+    """Quiet mode suppresses [done] for alias tasks."""
+    task_file = tmp_path / "conda-tasks.yml"
+    task_file.write_text(
+        "tasks:\n"
+        "  lint:\n    cmd: 'ruff check .'\n"
+        "  check:\n    depends-on: [lint]\n"
+    )
+
+    fake = FakeShell()
+    monkeypatch.setattr(run_mod, "SubprocessShell", lambda: fake)
+    result = execute_run(_run_args(task_file, task_name="check", quiet=True))
+
+    assert result == 0
+    assert capsys.readouterr().out == ""
 
 
 def test_execute_run_list_command(tmp_path, capsys):

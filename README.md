@@ -28,11 +28,14 @@ tasks:
     depends-on: [test, lint]
 ```
 
-```
+Running `check` resolves its dependencies and runs them in order:
+
+```console
 $ conda task run check
-  ▶ build
-  ▶ lint
-  ▶ test
+  [run] build: python -m build
+  [run] lint: ruff check .
+  [run] test: pytest tests/ -v
+  [done] check
 ```
 
 ## Why?

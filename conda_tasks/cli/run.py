@@ -178,4 +178,7 @@ def execute_run(args: argparse.Namespace) -> int:
                 cwd,
             )
 
+    if not quiet and tasks[target_name].is_alias:
+        print(f"  [done] {target_name}")
+
     return 0
