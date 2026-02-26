@@ -39,6 +39,7 @@ jobs:
       - name: Install docs dependencies
         run: |
           conda install -y \
+            conda jinja2 platformdirs tomlkit \
             conda-sphinx-theme linkify-it-py myst-parser sphinx \
             sphinx-argparse sphinx-copybutton sphinx-design \
             sphinx-reredirects sphinx-sitemap

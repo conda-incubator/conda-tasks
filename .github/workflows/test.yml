@@ -33,7 +33,7 @@ jobs:
             jinja2 platformdirs tomlkit
 
       - name: Install test dependencies
-        run: conda install -y pytest pytest-cov
+        run: conda install -y pytest pytest-cov conda jinja2 platformdirs tomlkit
 
       - name: Install conda-tasks (editable)
         run: |
