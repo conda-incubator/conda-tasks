@@ -34,7 +34,7 @@ jobs:
         run: |
           conda install -n base -y -c conda-forge \
             "conda>=26.1" "conda-pypi>=0.4" \
-            pyyaml jinja2 platformdirs tomlkit
+            jinja2 platformdirs tomlkit
 
       - name: Install docs dependencies
         run: |

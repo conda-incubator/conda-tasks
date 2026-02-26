@@ -101,7 +101,7 @@ def test_remove_nonexistent(sample_yaml):
 
 def test_parse_invalid(tmp_project):
     path = tmp_project / "conda-tasks.yml"
-    path.write_text(": :\n  - invalid: [yaml")
+    path.write_text("key: [invalid")
     with pytest.raises(TaskParseError):
         CondaTasksYAMLParser().parse(path)
 

@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import yaml
+from conda.common.serialize.yaml import YAMLError
+from conda.common.serialize.yaml import dumps as yaml_dumps
+from conda.common.serialize.yaml import loads as yaml_loads
 
 from ..exceptions import TaskNotFoundError, TaskParseError
 from .base import TaskFileParser
@@ -74,7 +76,7 @@ def tasks_to_yaml(tasks: dict[str, Task]) -> str:
     data: dict[str, object] = {
         "tasks": {name: task_to_yaml_dict(task) for name, task in tasks.items()}
     }
-    return yaml.dump(data, default_flow_style=False, sort_keys=False)
+    return yaml_dumps(data)
 
 
 class CondaTasksYAMLParser(TaskFileParser):
@@ -90,8 +92,8 @@ class CondaTasksYAMLParser(TaskFileParser):
     def parse(self, path: Path) -> dict[str, Task]:
         """Parse a ``conda-tasks.yml`` file and return its task definitions."""
         try:
-            data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-        except yaml.YAMLError as exc:
+            data = yaml_loads(path.read_text(encoding="utf-8")) or {}
+        except YAMLError as exc:
             raise TaskParseError(str(path), str(exc)) from exc
 
         raw_tasks = data.get("tasks", {})
@@ -102,23 +104,19 @@ class CondaTasksYAMLParser(TaskFileParser):
     def add_task(self, path: Path, name: str, task: Task) -> None:
         """Add or update a task in the YAML file, creating it if needed."""
         if path.exists():
-            data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+            data = yaml_loads(path.read_text(encoding="utf-8")) or {}
         else:
             data = {}
 
         tasks_section = data.setdefault("tasks", {})
         tasks_section[name] = task_to_yaml_dict(task)
-        path.write_text(
-            yaml.dump(data, default_flow_style=False, sort_keys=False), encoding="utf-8"
-        )
+        path.write_text(yaml_dumps(data), encoding="utf-8")
 
     def remove_task(self, path: Path, name: str) -> None:
         """Remove a task from the YAML file by name."""
-        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        data = yaml_loads(path.read_text(encoding="utf-8")) or {}
         tasks_section = data.get("tasks", {})
         if name not in tasks_section:
             raise TaskNotFoundError(name, list(tasks_section.keys()))
         del tasks_section[name]
-        path.write_text(
-            yaml.dump(data, default_flow_style=False, sort_keys=False), encoding="utf-8"
-        )
+        path.write_text(yaml_dumps(data), encoding="utf-8")
