@@ -6783,8 +6783,8 @@ packages:
   timestamp: 1749630737894
 - pypi: ./
   name: conda-tasks
-  version: 0.0.0.dev37+g5a3b57d7e.d20260226
-  sha256: d3e074f4cbc06818ee33ed9f0df2ed9618898af080865ca21af286eb21c051a1
+  version: 0.0.0.dev40+ga678f79bf.d20260226
+  sha256: e8b6cb480a4d481dd730a0ca34cc4f643c516ca693ddffb41b61fbfb284ca13c
   requires_dist:
   - conda>=24.7
   - jinja2>=3.0
@@ -6801,9 +6801,9 @@ packages:
   - sphinx-sitemap ; extra == 'docs'
   - pre-commit ; extra == 'lint'
   - ruff ; extra == 'lint'
-  - ty>=0.0.18,<0.0.19 ; extra == 'lint'
+  - ty>=0.0.18 ; extra == 'lint'
   - pytest-cov>=6.0 ; extra == 'test'
-  - pytest>=7.4 ; extra == 'test'
+  - pytest>=8.0 ; extra == 'test'
   requires_python: '>=3.10'
 - conda: https://conda.anaconda.org/conda-forge/linux-64/coverage-7.13.4-py310h3406613_0.conda
   sha256: 68afd2810131ac1e6d8db9b59947eeca4087060588abb16a06ca28813e8f95e6
