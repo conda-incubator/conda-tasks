@@ -30,7 +30,7 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-homepage = "https://github.com/jezdez/conda-tasks"
+homepage = "https://github.com/conda-incubator/conda-tasks"
 
 [project.optional-dependencies]
 test = [

@@ -1,9 +1,9 @@
 # conda-tasks
 
-[![Tests](https://github.com/jezdez/conda-tasks/actions/workflows/test.yml/badge.svg)](https://github.com/jezdez/conda-tasks/actions/workflows/test.yml)
-[![Docs](https://github.com/jezdez/conda-tasks/actions/workflows/docs.yml/badge.svg)](https://jezdez.github.io/conda-tasks/)
-[![License](https://img.shields.io/github/license/jezdez/conda-tasks)](https://github.com/jezdez/conda-tasks/blob/main/LICENSE)
-[![Python](https://img.shields.io/badge/python-3.10%E2%80%933.14-blue)](https://github.com/jezdez/conda-tasks)
+[![Tests](https://github.com/conda-incubator/conda-tasks/actions/workflows/test.yml/badge.svg)](https://github.com/conda-incubator/conda-tasks/actions/workflows/test.yml)
+[![Docs](https://github.com/conda-incubator/conda-tasks/actions/workflows/docs.yml/badge.svg)](https://conda-incubator.github.io/conda-tasks/)
+[![License](https://img.shields.io/github/license/conda-incubator/conda-tasks)](https://github.com/conda-incubator/conda-tasks/blob/main/LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10%E2%80%933.14-blue)](https://github.com/conda-incubator/conda-tasks)
 
 The missing task runner for conda, inspired by [pixi](https://pixi.sh).
 
@@ -70,11 +70,11 @@ conda install -c conda-forge conda-tasks
 conda-tasks is a task runner, not a package manager. It does not create
 environments or install dependencies -- that's conda's job. If you're
 coming from pixi where `pixi run` handles both, see the
-[migration guide](https://jezdez.github.io/conda-tasks/tutorials/coming-from-pixi/).
+[migration guide](https://conda-incubator.github.io/conda-tasks/tutorials/coming-from-pixi/).
 
 ## Documentation
 
-https://jezdez.github.io/conda-tasks/
+https://conda-incubator.github.io/conda-tasks/
 
 ## Acknowledgements
 

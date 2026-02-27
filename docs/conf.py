@@ -32,7 +32,7 @@ myst_enable_extensions = [
 html_theme = "conda_sphinx_theme"
 
 html_context = {
-    "github_user": "jezdez",
+    "github_user": "conda-incubator",
     "github_repo": "conda-tasks",
     "github_version": "main",
     "doc_path": "docs",
@@ -41,6 +41,6 @@ html_context = {
 html_static_path = ["_static"]
 html_css_files = ["css/custom.css"]
 
-html_baseurl = "https://jezdez.github.io/conda-tasks/"
+html_baseurl = "https://conda-incubator.github.io/conda-tasks/"
 
 exclude_patterns = ["_build"]
