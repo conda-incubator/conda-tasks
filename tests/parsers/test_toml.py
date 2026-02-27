@@ -9,7 +9,7 @@ import pytest
 from conda_tasks.exceptions import TaskNotFoundError, TaskParseError
 from conda_tasks.models import Task, TaskArg, TaskDependency, TaskOverride
 from conda_tasks.parsers.toml import (
-    CondaTasksTomlParser,
+    CondaTomlParser,
     _task_to_toml_inline,
     tasks_to_toml,
 )
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
 @pytest.fixture
 def sample_toml(tmp_project: Path) -> Path:
-    """Create a sample conda-tasks.toml for testing."""
+    """Create a sample conda.toml for testing."""
     content = """\
 [tasks]
 lint = "ruff check ."
@@ -51,13 +51,13 @@ description = "Run all checks"
 [target.win-64.tasks]
 platform-task = "rd /s /q build"
 """
-    path = tmp_project / "conda-tasks.toml"
+    path = tmp_project / "conda.toml"
     path.write_text(content)
     return path
 
 
 def test_can_handle(sample_toml):
-    parser = CondaTasksTomlParser()
+    parser = CondaTomlParser()
     assert parser.can_handle(sample_toml)
     assert not parser.can_handle(sample_toml.parent / "pixi.toml")
     assert not parser.can_handle(sample_toml.parent / "other.toml")
@@ -68,7 +68,7 @@ def test_can_handle(sample_toml):
     ["build", "configure", "test", "lint", "check", "_setup", "platform-task"],
 )
 def test_parse_contains_task(sample_toml, task_name):
-    tasks = CondaTasksTomlParser().parse(sample_toml)
+    tasks = CondaTomlParser().parse(sample_toml)
     assert task_name in tasks
 
 
@@ -83,24 +83,24 @@ def test_parse_contains_task(sample_toml, task_name):
     ],
 )
 def test_parse_task_attr(sample_toml, task_name, attr, expected):
-    tasks = CondaTasksTomlParser().parse(sample_toml)
+    tasks = CondaTomlParser().parse(sample_toml)
     assert getattr(tasks[task_name], attr) == expected
 
 
 def test_parse_depends_on(sample_toml):
-    tasks = CondaTasksTomlParser().parse(sample_toml)
+    tasks = CondaTomlParser().parse(sample_toml)
     assert len(tasks["build"].depends_on) == 1
     assert tasks["build"].depends_on[0].task == "configure"
 
 
 def test_parse_alias(sample_toml):
-    tasks = CondaTasksTomlParser().parse(sample_toml)
+    tasks = CondaTomlParser().parse(sample_toml)
     assert tasks["check"].is_alias
     assert tasks["check"].cmd is None
 
 
 def test_parse_args(sample_toml):
-    tasks = CondaTasksTomlParser().parse(sample_toml)
+    tasks = CondaTomlParser().parse(sample_toml)
     test = tasks["test"]
     assert len(test.args) == 1
     assert test.args[0].name == "test_path"
@@ -108,12 +108,12 @@ def test_parse_args(sample_toml):
 
 
 def test_parse_hidden(sample_toml):
-    tasks = CondaTasksTomlParser().parse(sample_toml)
+    tasks = CondaTomlParser().parse(sample_toml)
     assert tasks["_setup"].is_hidden
 
 
 def test_parse_platform_override(sample_toml):
-    tasks = CondaTasksTomlParser().parse(sample_toml)
+    tasks = CondaTomlParser().parse(sample_toml)
     pt = tasks["platform-task"]
     assert pt.platforms is not None
     assert "win-64" in pt.platforms
@@ -121,8 +121,8 @@ def test_parse_platform_override(sample_toml):
 
 
 def test_add_task(tmp_project):
-    path = tmp_project / "conda-tasks.toml"
-    parser = CondaTasksTomlParser()
+    path = tmp_project / "conda.toml"
+    parser = CondaTomlParser()
     task = Task(name="new", cmd="echo new")
     parser.add_task(path, "new", task)
 
@@ -132,7 +132,7 @@ def test_add_task(tmp_project):
 
 
 def test_add_task_to_existing(sample_toml):
-    parser = CondaTasksTomlParser()
+    parser = CondaTomlParser()
     task = Task(name="extra", cmd="echo extra")
     parser.add_task(sample_toml, "extra", task)
 
@@ -142,7 +142,7 @@ def test_add_task_to_existing(sample_toml):
 
 
 def test_remove_task(sample_toml):
-    parser = CondaTasksTomlParser()
+    parser = CondaTomlParser()
     parser.remove_task(sample_toml, "lint")
     tasks = parser.parse(sample_toml)
     assert "lint" not in tasks
@@ -150,14 +150,14 @@ def test_remove_task(sample_toml):
 
 def test_remove_nonexistent(sample_toml):
     with pytest.raises(TaskNotFoundError):
-        CondaTasksTomlParser().remove_task(sample_toml, "nonexistent")
+        CondaTomlParser().remove_task(sample_toml, "nonexistent")
 
 
 def test_parse_invalid(tmp_project):
-    path = tmp_project / "conda-tasks.toml"
+    path = tmp_project / "conda.toml"
     path.write_text("[tasks\nbroken = ")
     with pytest.raises(TaskParseError):
-        CondaTasksTomlParser().parse(path)
+        CondaTomlParser().parse(path)
 
 
 def test_to_toml_inline_simple_cmd():
@@ -208,9 +208,9 @@ def test_tasks_to_toml_roundtrip(tmp_path):
         ),
     }
     toml_text = tasks_to_toml(tasks)
-    out = tmp_path / "conda-tasks.toml"
+    out = tmp_path / "conda.toml"
     out.write_text(toml_text)
-    parsed = CondaTasksTomlParser().parse(out)
+    parsed = CondaTomlParser().parse(out)
     assert set(parsed.keys()) == {"build", "test"}
     assert parsed["build"].cmd == "make"
     assert parsed["test"].depends_on[0].task == "build"
@@ -230,9 +230,9 @@ def test_tasks_to_toml_with_platforms(tmp_path):
     toml_text = tasks_to_toml(tasks)
     assert "[target.win-64.tasks]" in toml_text
 
-    out = tmp_path / "conda-tasks.toml"
+    out = tmp_path / "conda.toml"
     out.write_text(toml_text)
-    parsed = CondaTasksTomlParser().parse(out)
+    parsed = CondaTomlParser().parse(out)
     assert parsed["clean"].platforms is not None
     assert "win-64" in parsed["clean"].platforms
     assert parsed["clean"].platforms["win-64"].cmd == "rd /s /q build"

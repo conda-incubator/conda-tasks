@@ -7,7 +7,7 @@ import argparse
 import pytest
 
 from conda_tasks.cli.add import execute_add
-from conda_tasks.parsers.yaml import CondaTasksYAMLParser
+from conda_tasks.parsers.toml import CondaTomlParser
 
 
 @pytest.mark.parametrize(
@@ -19,9 +19,9 @@ from conda_tasks.parsers.yaml import CondaTasksYAMLParser
     ids=["real", "dry-run"],
 )
 def test_add_task(tmp_path, capsys, dry_run, expect_file_exists):
-    path = tmp_path / "conda-tasks.yml"
+    path = tmp_path / "conda.toml"
     if not dry_run:
-        path.write_text("tasks: {}")
+        path.write_text("[tasks]\n")
 
     args = argparse.Namespace(
         file=path,
@@ -38,7 +38,7 @@ def test_add_task(tmp_path, capsys, dry_run, expect_file_exists):
     assert result == 0
 
     if expect_file_exists:
-        tasks = CondaTasksYAMLParser().parse(path)
+        tasks = CondaTomlParser().parse(path)
         assert "newtask" in tasks
     else:
         assert "[dry-run]" in capsys.readouterr().out
@@ -46,7 +46,7 @@ def test_add_task(tmp_path, capsys, dry_run, expect_file_exists):
 
 
 def test_add_task_auto_detect_creates_default_file(tmp_path, monkeypatch, capsys):
-    """When no file exists and none detected, defaults to conda-tasks.yml."""
+    """When no file exists and none detected, defaults to conda.toml."""
     monkeypatch.chdir(tmp_path)
 
     args = argparse.Namespace(
@@ -62,8 +62,8 @@ def test_add_task_auto_detect_creates_default_file(tmp_path, monkeypatch, capsys
     )
     result = execute_add(args)
     assert result == 0
-    default_path = tmp_path / "conda-tasks.yml"
+    default_path = tmp_path / "conda.toml"
     assert default_path.exists()
 
-    tasks = CondaTasksYAMLParser().parse(default_path)
+    tasks = CondaTomlParser().parse(default_path)
     assert "newtask" in tasks

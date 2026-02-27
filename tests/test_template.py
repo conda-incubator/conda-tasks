@@ -33,7 +33,7 @@ def test_render_platform_conditional(template):
 
 
 def test_render_manifest_path(tmp_path):
-    p = tmp_path / "conda-tasks.yml"
+    p = tmp_path / "conda.toml"
     result = render("{{ conda.manifest_path }}", manifest_path=p)
     assert result == str(p)
 

@@ -50,8 +50,8 @@ build = "nmake build"
 
 
 @pytest.fixture
-def sample_conda_tasks_toml(tmp_project: Path) -> Path:
-    """Create a sample conda-tasks.toml for testing."""
+def sample_conda_toml(tmp_project: Path) -> Path:
+    """Create a sample conda.toml for testing."""
     content = """\
 [tasks]
 build = { cmd = "make build", depends-on = ["configure"] }
@@ -61,7 +61,7 @@ test = { cmd = "pytest", depends-on = ["build"] }
 [target.win-64.tasks]
 build = "nmake build"
 """
-    path = tmp_project / "conda-tasks.toml"
+    path = tmp_project / "conda.toml"
     path.write_text(content)
     return path
 

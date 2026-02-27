@@ -92,7 +92,6 @@ def test_execute_dispatches_export(sample_yaml, capsys):
         subcmd="export",
         file=sample_yaml,
         output=None,
-        export_format="yaml",
         quiet=False,
         verbose=0,
         json=False,
@@ -101,13 +100,13 @@ def test_execute_dispatches_export(sample_yaml, capsys):
     result = execute(args)
     assert result == 0
     output = capsys.readouterr().out
-    assert "tasks:" in output
+    assert "[tasks]" in output
 
 
 def test_execute_dispatches_add(tmp_path, capsys):
     """execute() with subcmd=add dispatches to execute_add."""
-    path = tmp_path / "conda-tasks.yml"
-    path.write_text("tasks: {}")
+    path = tmp_path / "conda.toml"
+    path.write_text("[tasks]\n")
     args = argparse.Namespace(
         subcmd="add",
         file=path,
@@ -145,8 +144,8 @@ def test_execute_dispatches_remove(sample_yaml, capsys):
 
 def test_execute_run_implicit_subcmd(tmp_path, capsys):
     """When subcmd=None but task_name is present, infer 'run'."""
-    path = tmp_path / "conda-tasks.yml"
-    path.write_text("tasks:\n  greet:\n    cmd: 'echo hello'\n")
+    path = tmp_path / "conda.toml"
+    path.write_text('[tasks]\ngreet = "echo hello"\n')
     args = argparse.Namespace(
         subcmd=None,
         file=path,

@@ -65,11 +65,13 @@ def test_parse_invalid_toml(tmp_project):
         PixiTomlParser().parse(path)
 
 
-def test_add_raises(sample_pixi_toml):
+@pytest.mark.parametrize(
+    "method, args",
+    [
+        ("add_task", lambda p: (p, "x", Task(name="x", cmd="echo"))),
+        ("remove_task", lambda p: (p, "build")),
+    ],
+)
+def test_write_raises(sample_pixi_toml, method, args):
     with pytest.raises(NotImplementedError):
-        PixiTomlParser().add_task(sample_pixi_toml, "x", Task(name="x", cmd="echo"))
-
-
-def test_remove_raises(sample_pixi_toml):
-    with pytest.raises(NotImplementedError):
-        PixiTomlParser().remove_task(sample_pixi_toml, "build")
+        getattr(PixiTomlParser(), method)(*args(sample_pixi_toml))

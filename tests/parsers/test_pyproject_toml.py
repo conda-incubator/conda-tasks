@@ -72,12 +72,13 @@ def test_parse_target_only_task(tmp_project):
     assert tasks["special"].platforms is not None
 
 
-def test_add_raises(sample_pyproject):
-    task = Task(name="x", cmd="echo")
+@pytest.mark.parametrize(
+    "method, args",
+    [
+        ("add_task", lambda p: (p, "x", Task(name="x", cmd="echo"))),
+        ("remove_task", lambda p: (p, "build")),
+    ],
+)
+def test_write_raises(sample_pyproject, method, args):
     with pytest.raises(NotImplementedError):
-        PyprojectTomlParser().add_task(sample_pyproject, "x", task)
-
-
-def test_remove_raises(sample_pyproject):
-    with pytest.raises(NotImplementedError):
-        PyprojectTomlParser().remove_task(sample_pyproject, "build")
+        getattr(PyprojectTomlParser(), method)(*args(sample_pyproject))

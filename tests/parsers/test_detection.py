@@ -7,15 +7,13 @@ import pytest
 from conda_tasks.exceptions import NoTaskFileError
 from conda_tasks.parsers import detect_and_parse, detect_task_file, get_parser
 from conda_tasks.parsers.pixi_toml import PixiTomlParser
-from conda_tasks.parsers.toml import CondaTasksTomlParser
-from conda_tasks.parsers.yaml import CondaTasksYAMLParser
+from conda_tasks.parsers.toml import CondaTomlParser
 
 
 @pytest.mark.parametrize(
     ("fixture_name", "expected_filename"),
     [
-        ("sample_yaml", "conda-tasks.yml"),
-        ("sample_conda_tasks_toml", "conda-tasks.toml"),
+        ("sample_conda_toml", "conda.toml"),
         ("sample_pixi_toml", "pixi.toml"),
     ],
 )
@@ -26,28 +24,22 @@ def test_detect_task_file(fixture_name, expected_filename, request):
     assert found.name == expected_filename
 
 
-def test_detect_priority_yaml_over_toml(
-    tmp_project, sample_yaml, sample_conda_tasks_toml
+def test_detect_priority_pixi_over_conda(
+    tmp_project, sample_pixi_toml, sample_conda_toml
 ):
-    """conda-tasks.yml takes priority over conda-tasks.toml."""
+    """pixi.toml takes priority over conda.toml."""
     found = detect_task_file(tmp_project)
     assert found is not None
-    assert found.name == "conda-tasks.yml"
+    assert found.name == "pixi.toml"
 
 
-def test_detect_priority_toml_over_pixi(
-    tmp_project, sample_conda_tasks_toml, sample_pixi_toml
+def test_detect_priority_conda_over_pyproject(
+    tmp_project, sample_conda_toml, sample_pyproject
 ):
-    """conda-tasks.toml takes priority over pixi.toml."""
+    """conda.toml takes priority over pyproject.toml."""
     found = detect_task_file(tmp_project)
     assert found is not None
-    assert found.name == "conda-tasks.toml"
-
-
-def test_detect_priority(tmp_project, sample_yaml, sample_pixi_toml):
-    found = detect_task_file(tmp_project)
-    assert found is not None
-    assert found.name == "conda-tasks.yml"
+    assert found.name == "conda.toml"
 
 
 def test_detect_none(tmp_project):
@@ -57,8 +49,7 @@ def test_detect_none(tmp_project):
 @pytest.mark.parametrize(
     ("fixture_name", "parser_class"),
     [
-        ("sample_yaml", CondaTasksYAMLParser),
-        ("sample_conda_tasks_toml", CondaTasksTomlParser),
+        ("sample_conda_toml", CondaTomlParser),
         ("sample_pixi_toml", PixiTomlParser),
     ],
 )

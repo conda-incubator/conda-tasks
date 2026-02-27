@@ -8,7 +8,7 @@ import pytest
 
 from conda_tasks.cli.remove import execute_remove
 from conda_tasks.exceptions import TaskNotFoundError
-from conda_tasks.parsers.yaml import CondaTasksYAMLParser
+from conda_tasks.parsers.toml import CondaTomlParser
 
 
 def test_remove_task(sample_yaml):
@@ -23,7 +23,7 @@ def test_remove_task(sample_yaml):
     result = execute_remove(args)
     assert result == 0
 
-    tasks = CondaTasksYAMLParser().parse(sample_yaml)
+    tasks = CondaTomlParser().parse(sample_yaml)
     assert "lint" not in tasks
 
 
@@ -53,5 +53,5 @@ def test_remove_dry_run(sample_yaml, capsys):
     assert result == 0
     assert "[dry-run]" in capsys.readouterr().out
 
-    tasks = CondaTasksYAMLParser().parse(sample_yaml)
+    tasks = CondaTomlParser().parse(sample_yaml)
     assert "lint" in tasks

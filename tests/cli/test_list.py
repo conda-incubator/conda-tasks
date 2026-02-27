@@ -25,8 +25,8 @@ def test_list_tasks(sample_yaml, capsys):
 
 
 def test_list_no_tasks(tmp_path, capsys):
-    path = tmp_path / "conda-tasks.yml"
-    path.write_text("tasks: {}")
+    path = tmp_path / "conda.toml"
+    path.write_text("[tasks]\n")
 
     args = argparse.Namespace(
         file=path,
@@ -82,9 +82,9 @@ def test_list_shows_dependencies(sample_yaml, capsys):
 
 def test_list_cmd_as_list(tmp_path, capsys):
     """List-form commands are joined in the listing."""
-    path = tmp_path / "conda-tasks.yml"
+    path = tmp_path / "conda.toml"
     path.write_text(
-        "tasks:\n  build:\n    cmd:\n      - cmake\n      - --build\n      - .\n"
+        '[tasks]\nbuild = "cmake --build ."\n'
     )
 
     args = argparse.Namespace(
@@ -97,13 +97,10 @@ def test_list_cmd_as_list(tmp_path, capsys):
 
 def test_list_json_alias(tmp_path, monkeypatch):
     """JSON output marks alias tasks."""
-    path = tmp_path / "conda-tasks.yml"
+    path = tmp_path / "conda.toml"
     path.write_text(
-        "tasks:\n"
-        "  lint:\n    cmd: 'ruff check .'\n"
-        "  test:\n    cmd: 'pytest'\n"
-        "  check:\n    depends-on: [lint, test]\n"
-        "    description: 'Run all'\n"
+        '[tasks]\nlint = "ruff check ."\ntest = "pytest"\n\n'
+        '[tasks.check]\ndepends-on = ["lint", "test"]\ndescription = "Run all"\n'
     )
     captured = {}
 

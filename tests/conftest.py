@@ -25,40 +25,38 @@ def tmp_project(tmp_path: Path) -> Path:
 
 @pytest.fixture
 def sample_yaml(tmp_project: Path) -> Path:
-    """Create a sample conda-tasks.yml for testing."""
+    """Create a sample conda.toml for testing (legacy fixture name)."""
     content = """\
-tasks:
-  build:
-    cmd: "make build"
-    depends-on: [configure]
-    description: "Build the project"
-    inputs: ["src/**/*.py"]
-    outputs: ["dist/"]
-  configure:
-    cmd: "cmake -G Ninja -S . -B .build"
-    description: "Configure build system"
-  test:
-    cmd: "pytest {{ test_path }}"
-    args:
-      - arg: test_path
-        default: "tests/"
-    env:
-      PYTHONPATH: "src"
-    clean-env: true
-  lint:
-    cmd: "ruff check ."
-  check:
-    depends-on: [test, lint]
-    description: "Run all checks"
-  _setup:
-    cmd: "mkdir -p build/"
-  platform-task:
-    cmd: "rm -rf build/"
-    target:
-      win-64:
-        cmd: "rd /s /q build"
+[tasks]
+lint = "ruff check ."
+_setup = "mkdir -p build/"
+platform-task = "rm -rf build/"
+
+[tasks.build]
+cmd = "make build"
+depends-on = ["configure"]
+description = "Build the project"
+inputs = ["src/**/*.py"]
+outputs = ["dist/"]
+
+[tasks.configure]
+cmd = "cmake -G Ninja -S . -B .build"
+description = "Configure build system"
+
+[tasks.test]
+cmd = "pytest {{ test_path }}"
+env = { PYTHONPATH = "src" }
+clean-env = true
+args = [{ arg = "test_path", default = "tests/" }]
+
+[tasks.check]
+depends-on = ["test", "lint"]
+description = "Run all checks"
+
+[target.win-64.tasks]
+platform-task = "rd /s /q build"
 """
-    path = tmp_project / "conda-tasks.yml"
+    path = tmp_project / "conda.toml"
     path.write_text(content)
     return path
 

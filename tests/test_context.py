@@ -46,8 +46,8 @@ def test_platform_flag(platform_val, attr):
     ("manifest_path", "expected"),
     [
         (
-            Path("/some/project/conda-tasks.yml"),
-            str(Path("/some/project/conda-tasks.yml")),
+            Path("/some/project/conda.toml"),
+            str(Path("/some/project/conda.toml")),
         ),
         (None, ""),
     ],
